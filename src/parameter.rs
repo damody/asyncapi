@@ -48,15 +48,15 @@ pub struct Parameter {
     /// Definition of the parameter.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub schema: Option<ReferenceOr<Schema>>,
-    /// A [runtime expression](https://www.asyncapi.com/docs/specifications/v2.4.0#runtimeExpression)
+    /// A [runtime expression](https://www.asyncapi.com/docs/specifications/v2.5.0#runtimeExpression)
     /// that specifies the location of the parameter value.
     /// Even when a definition for the target field exists,
     /// it MUST NOT be used to validate this parameter but,
     /// instead, the `schema` property MUST be used.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub location: Option<String>,
-    /// This object can be extended with
-    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.4.0#specificationExtensions).
+    /// This object MAY be extended with
+    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.5.0#specificationExtensions).
     #[serde(flatten)]
     pub extensions: IndexMap<String, serde_json::Value>,
 }

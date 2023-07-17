@@ -56,8 +56,8 @@ pub struct ServerBinding {
     /// Protocol-specific information for an IBM MQ server.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ibmmq: Option<IBMMQServerBinding>,
-    /// This object can be extended with
-    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.4.0#specificationExtensions).
+    /// This object MAY be extended with
+    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.5.0#specificationExtensions).
     #[serde(flatten)]
     pub extensions: IndexMap<String, serde_json::Value>,
 }

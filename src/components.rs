@@ -236,8 +236,8 @@ pub struct Components {
     /// [Message Bindings Objects][crate::MessageBinding].
     #[serde(default, skip_serializing_if = "IndexMap::is_empty")]
     pub message_bindings: IndexMap<String, ReferenceOr<MessageBinding>>,
-    /// This object can be extended with
-    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.4.0#specificationExtensions).
+    /// This object MAY be extended with
+    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.5.0#specificationExtensions).
     #[serde(flatten)]
     pub extensions: IndexMap<String, serde_json::Value>,
 }

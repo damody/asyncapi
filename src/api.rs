@@ -8,7 +8,7 @@ use crate::{Channel, Components, ExternalDocumentation, Info, ReferenceOr, Serve
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct AsyncAPI {
-    /// **Required.** Specifies the AsyncAPI Specification version being used.
+    /// **REQUIRED.** Specifies the AsyncAPI Specification version being used.
     /// It can be used by tooling Specifications and clients to interpret the
     /// version. The structure shall be `major`.`minor`.`patch`, where `patch`
     /// versions must be compatible with the existing `major`.`minor` tooling.
@@ -35,11 +35,11 @@ pub struct AsyncAPI {
     /// designed for `1.0.0`.
     pub asyncapi: String,
     /// Identifier of the
-    /// [application](https://www.asyncapi.com/docs/specifications/v2.4.0#definitionsApplication)
+    /// [application](https://www.asyncapi.com/docs/specifications/v2.5.0#definitionsApplication)
     /// the AsyncAPI document is defining.
     ///
     /// This field represents a unique universal identifier of the
-    /// [application](https://www.asyncapi.com/docs/specifications/v2.4.0#definitionsApplication)
+    /// [application](https://www.asyncapi.com/docs/specifications/v2.5.0#definitionsApplication)
     /// the AsyncAPI document is defining. It must conform to the URI format,
     /// according to [RFC3986](https://tools.ietf.org/html/rfc3986).
     ///
@@ -70,7 +70,7 @@ pub struct AsyncAPI {
     /// ```
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
-    /// **Required.** Provides metadata about the API.
+    /// **REQUIRED.** Provides metadata about the API.
     /// The metadata can be used by the clients if needed.
     pub info: Info,
     /// Provides connection details of servers.
@@ -103,7 +103,7 @@ pub struct AsyncAPI {
     /// A string representing the default content type to use when encoding/decoding a
     /// message's payload. The value MUST be a specific media type (e.g. `application/json`).
     /// This value MUST be used by schema parsers when the
-    /// [contentType](https://www.asyncapi.com/docs/specifications/v2.4.0#messageObjectContentType)
+    /// [contentType](https://www.asyncapi.com/docs/specifications/v2.5.0#messageObjectContentType)
     /// property is omitted.
     ///
     /// In case a message can't be encoded/decoded using this value, schema
@@ -161,8 +161,8 @@ pub struct AsyncAPI {
     /// Additional external documentation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub external_docs: Option<ExternalDocumentation>,
-    /// This object can be extended with
-    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.4.0#specificationExtensions).
+    /// This object MAY be extended with
+    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.5.0#specificationExtensions).
     #[serde(flatten)]
     pub extensions: IndexMap<String, serde_json::Value>,
 }

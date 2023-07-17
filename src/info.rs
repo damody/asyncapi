@@ -38,7 +38,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct Info {
-    /// **Required.** The title of the application.
+    /// **REQUIRED.** The title of the application.
     pub title: String,
     /// **Required** Provides the version of the application API
     /// (not to be confused with the specification version).
@@ -57,8 +57,8 @@ pub struct Info {
     /// The license information for the exposed API.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub license: Option<License>,
-    /// This object can be extended with
-    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.4.0#specificationExtensions).
+    /// This object MAY be extended with
+    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.5.0#specificationExtensions).
     #[serde(flatten)]
     pub extensions: IndexMap<String, serde_json::Value>,
 }
@@ -93,8 +93,8 @@ pub struct Contact {
     /// MUST be in the format of an email address.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
-    /// This object can be extended with
-    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.4.0#specificationExtensions).
+    /// This object MAY be extended with
+    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.5.0#specificationExtensions).
     #[serde(flatten)]
     pub extensions: IndexMap<String, serde_json::Value>,
 }
@@ -116,14 +116,14 @@ pub struct Contact {
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct License {
-    /// **Required.** The license name used for the API.
+    /// **REQUIRED.** The license name used for the API.
     pub name: String,
     /// A URL to the license used for the API.
     /// MUST be in the format of a URL.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
-    /// This object can be extended with
-    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.4.0#specificationExtensions).
+    /// This object MAY be extended with
+    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.5.0#specificationExtensions).
     #[serde(flatten)]
     pub extensions: IndexMap<String, serde_json::Value>,
 }

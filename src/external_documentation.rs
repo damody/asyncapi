@@ -11,8 +11,8 @@ pub struct ExternalDocumentation {
     /// **Required**. The URL for the target documentation.
     /// Value MUST be in the format of a URL.
     pub url: String,
-    /// This object can be extended with
-    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.4.0#specificationExtensions).
+    /// This object MAY be extended with
+    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.5.0#specificationExtensions).
     #[serde(flatten)]
     pub extensions: IndexMap<String, serde_json::Value>,
 }

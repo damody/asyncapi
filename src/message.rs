@@ -10,7 +10,7 @@ use crate::{CorrelationId, Example, ExternalDocumentation, MessageBinding, Refer
 ///
 /// NAME | ALLOWED VALUES | NOTES
 /// -----|----------------|--------
-/// [AsyncAPI 2.4.0 Schema Object](https://www.asyncapi.com/docs/specifications/v2.4.0#schemaObject) | `application/vnd.aai.asyncapi;version=2.4.0`, `application/vnd.aai.asyncapi+json;version=2.4.0`, `application/vnd.aai.asyncapi+yaml;version=2.4.0` | This is the default when a `schemaFormat` is not provided.
+/// [AsyncAPI 2.5.0 Schema Object](https://www.asyncapi.com/docs/specifications/v2.5.0#schemaObject) | `application/vnd.aai.asyncapi;version=2.5.0`, `application/vnd.aai.asyncapi+json;version=2.5.0`, `application/vnd.aai.asyncapi+yaml;version=2.5.0` | This is the default when a `schemaFormat` is not provided.
 /// [JSON Schema Draft 07](https://json-schema.org/specification-links.html#draft-7) | `application/schema+json;version=draft-07`, `application/schema+yaml;version=draft-07` |
 ///
 /// The following table contains a set of values that every implementation is RECOMMENDED to support.
@@ -227,8 +227,8 @@ pub struct Message {
     /// An array with examples of valid message objects.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub examples: Vec<Example>, // TODO try to parse better
-    /// This object can be extended with
-    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.4.0#specificationExtensions).
+    /// This object MAY be extended with
+    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.5.0#specificationExtensions).
     #[serde(flatten)]
     pub extensions: IndexMap<String, serde_json::Value>,
 }

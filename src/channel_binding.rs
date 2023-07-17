@@ -57,8 +57,11 @@ pub struct ChannelBinding {
     /// Protocol-specific information for an IBM MQ channel.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ibmmq: Option<IBMMQChannelBinding>,
-    /// This object can be extended with
-    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.4.0#specificationExtensions).
+    /// Protocol-specific information for a Google Cloud
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub googlepubsub: Option<GooglepubsubChannelBinding>,
+    /// This object MAY be extended with
+    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.5.0#specificationExtensions).
     #[serde(flatten)]
     pub extensions: IndexMap<String, serde_json::Value>,
 }
@@ -409,4 +412,139 @@ pub struct IBMMQChannelBindingTopic {
     /// available to new subscriptions.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last_msg_retained: Option<bool>,
+}
+
+/// # Example
+///
+/// ```yaml
+/// channels:
+/// topic-avro-schema:
+///   bindings:
+///     googlepubsub:
+///       topic: projects/your-project/topics/topic-avro-schema
+///       schemaSettings:
+///         encoding: json
+///         name: projects/your-project/schemas/message-avro
+/// # ...
+/// topic-proto-schema:
+///   bindings:
+///     googlepubsub:
+///       topic: projects/your-project/topics/topic-proto-schema
+///       messageRetentionDuration: 86400s
+///       messageStoragePolicy:
+///         allowedPersistenceRegions:
+///         - us-central1
+///         - us-central2
+///         - us-east1
+///         - us-east4
+///         - us-east5
+///         - us-east7
+///         - us-south1
+///         - us-west1
+///         - us-west2
+///         - us-west3
+///         - us-west4
+///       schemaSettings:
+///         encoding: binary
+///         name: projects/your-project/schemas/message-proto
+/// ```
+///
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct GooglepubsubChannelBinding {
+    /// The version of this binding. The current version is 0.1.0
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub binding_version: Option<String>,
+    /// An object of key-value pairs (These are used to categorize Cloud Resources like Cloud Pub/Sub Topics.)
+    #[serde(default, skip_serializing_if = "IndexMap::is_empty")]
+    pub labels: IndexMap<String, String>,
+    /// Indicates the minimum duration to retain a message after it is published to the topic (Must be a valid Duration.)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_retention_duration: Option<String>,
+    /// Policy constraining the set of Google Cloud Platform regions where messages published to the topic may be stored
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_storage_policy: Option<GoogleMessageStoragePolicy>,
+    /// Settings for validating messages published against a schema
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub schema_settings: Option<GoogleSchemaSettings>,
+    /// The Google Cloud Pub/Sub Topic name
+    pub topic: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct GoogleMessageStoragePolicy {
+    /// A list of IDs of GCP regions where messages that are published to the topic may be persisted in storage
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub allowed_persistence_regions: Vec<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct GoogleSchemaSettings {
+    /// The encoding of the message (Must be one of the possible Encoding values.)
+    pub encoding: String,
+    /// The minimum (inclusive) revision allowed for validating messages
+    pub first_revision_id: String,
+    /// The maximum (inclusive) revision allowed for validating messages
+    pub last_revision_id: String,
+    /// The name of the schema that messages published should be validated against
+    /// (The format is projects/{project}/schemas/{schema}.)
+    pub name: String,
+}
+
+/// # Example
+/// # ...
+/// components:
+///   messages:
+///     messageAvro:
+///       bindings:
+///         googlepubsub:
+///           schema:
+///             name: projects/your-project/schemas/message-avro
+///             type: avro
+///       contentType: application/json
+///       name: MessageAvro
+///       payload:
+///         fields:
+///         - name: message
+///           type: string
+///         name: Message
+///         type: record
+///       schemaFormat: application/vnd.apache.avro+yaml;version=1.9.0
+///     messageProto:
+///       bindings:
+///         googlepubsub:
+///           schema:
+///             name: projects/your-project/schemas/message-proto
+///             type: protobuf
+///       contentType: application/octet-stream
+///       name: MessageProto
+///       payload: true
+/// # ...
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct GoogleMessageBinding {
+    /// The version of this binding. The current version is 0.1.0
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub binding_version: Option<String>,
+    /// Attributes for this message (If this field is empty, the message must contain non-empty data. This can be used to filter messages on the subscription.)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub attributes: Option<serde_json::Value>,
+    /// If non-empty, identifies related messages for which publish order should be respected (For more information, see ordering messages.)
+    pub ordering_key: String,
+    /// Describes the schema used to validate the payload of this message
+    pub schema: GoogleSchemaDefinition,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct GoogleSchemaDefinition {
+    /// The name of the schema
+    pub name: String,
+    /// The type of the schema
+    #[serde(rename = "type")]
+    pub type_: String,
 }
