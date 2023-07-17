@@ -1,10 +1,7 @@
 use indexmap::IndexMap;
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    ChannelBinding, ExternalDocumentation, Message, OperationBinding, OperationTrait, Parameter,
-    ReferenceOr, Tag,
-};
+use crate::{ChannelBinding, ExternalDocumentation, Message, OperationBinding, OperationTrait, Parameter, ReferenceOr, SecurityRequirement, Tag};
 
 /// Describes the operations available on a single channel.
 ///
@@ -90,7 +87,7 @@ pub struct Channel {
     /// If there are conflicts between the referenced definition and this Channel Item's
     /// definition, the behavior is *undefined*.
     #[deprecated(note = "The $ref field in Channel Item Object is now deprecated
-        from AsyncAPI 2.3.0. The current plan is that the $ref field will be 
+        from AsyncAPI 2.4.0. The current plan is that the $ref field will be 
         removed from Channel Item Object in AsyncAPI 3.0, and replaced with 
         Reference Object.")]
     #[serde(rename = "$ref")]
@@ -160,7 +157,7 @@ pub struct Channel {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bindings: Option<ReferenceOr<ChannelBinding>>,
     /// This object can be extended with
-    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.3.0#specificationExtensions).
+    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.4.0#specificationExtensions).
     #[serde(flatten)]
     pub extensions: IndexMap<String, serde_json::Value>,
 }
@@ -179,6 +176,14 @@ pub struct Channel {
 ///     "operationId": "registerUser",
 ///     "summary": "Action to sign a user up.",
 ///     "description": "A longer description",
+///     "security": [
+///     {
+///         "petstore_auth": [
+///         "write:pets",
+///         "read:pets"
+///         ]
+///     }
+///     ],
 ///     "tags": [
 ///         { "name": "user" },
 ///         { "name": "signup" },
@@ -264,6 +269,12 @@ pub struct Operation {
     /// can be used for rich text representation.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
+    /// [[Security Requirement Object](#securityRequirementObject)]
+    /// A declaration of which security mechanisms are associated with this operation.
+    /// Only one of the security requirement objects MUST be satisfied to authorize an operation.
+    /// In cases where Server Security also applies, it MUST also be satisfied.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub security: Vec<SecurityRequirement>,
     /// A list of tags for API documentation control.
     /// Tags can be used for logical grouping of operations.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -287,7 +298,7 @@ pub struct Operation {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<OperationMessageType>,
     /// This object can be extended with
-    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.3.0#specificationExtensions).
+    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.4.0#specificationExtensions).
     #[serde(flatten)]
     pub extensions: IndexMap<String, serde_json::Value>,
 }

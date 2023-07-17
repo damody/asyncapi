@@ -55,7 +55,7 @@ pub struct OperationBinding {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mercure: Option<MercureOperationBinding>,
     /// This object can be extended with
-    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.3.0#specificationExtensions).
+    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.4.0#specificationExtensions).
     #[serde(flatten)]
     pub extensions: IndexMap<String, serde_json::Value>,
 }

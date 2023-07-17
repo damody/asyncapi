@@ -35,11 +35,11 @@ pub struct AsyncAPI {
     /// designed for `1.0.0`.
     pub asyncapi: String,
     /// Identifier of the
-    /// [application](https://www.asyncapi.com/docs/specifications/v2.3.0#definitionsApplication)
+    /// [application](https://www.asyncapi.com/docs/specifications/v2.4.0#definitionsApplication)
     /// the AsyncAPI document is defining.
     ///
     /// This field represents a unique universal identifier of the
-    /// [application](https://www.asyncapi.com/docs/specifications/v2.3.0#definitionsApplication)
+    /// [application](https://www.asyncapi.com/docs/specifications/v2.4.0#definitionsApplication)
     /// the AsyncAPI document is defining. It must conform to the URI format,
     /// according to [RFC3986](https://tools.ietf.org/html/rfc3986).
     ///
@@ -92,7 +92,7 @@ pub struct AsyncAPI {
     ///
     /// ```yaml
     /// production:
-    ///     url: development.gigantic-server.com
+    ///     url: "{stage}.gigantic-server.com:{port}"
     ///     description: Development server
     ///     protocol: kafka
     ///     protocolVersion: '1.0.0'
@@ -103,7 +103,7 @@ pub struct AsyncAPI {
     /// A string representing the default content type to use when encoding/decoding a
     /// message's payload. The value MUST be a specific media type (e.g. `application/json`).
     /// This value MUST be used by schema parsers when the
-    /// [contentType](https://www.asyncapi.com/docs/specifications/v2.3.0#messageObjectContentType)
+    /// [contentType](https://www.asyncapi.com/docs/specifications/v2.4.0#messageObjectContentType)
     /// property is omitted.
     ///
     /// In case a message can't be encoded/decoded using this value, schema
@@ -162,7 +162,7 @@ pub struct AsyncAPI {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub external_docs: Option<ExternalDocumentation>,
     /// This object can be extended with
-    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.3.0#specificationExtensions).
+    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.4.0#specificationExtensions).
     #[serde(flatten)]
     pub extensions: IndexMap<String, serde_json::Value>,
 }

@@ -2,9 +2,8 @@ use indexmap::IndexMap;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    message_binding::MessageBinding, Channel, ChannelBinding, CorrelationId, Message, MessageTrait,
-    OperationBinding, OperationTrait, Parameter, ReferenceOr, Schema, SecurityScheme, Server,
-    ServerBinding,
+    message_binding::MessageBinding, Channel, ChannelBinding, CorrelationId, Message, MessageTrait, OperationBinding, OperationTrait, Parameter, ReferenceOr, Schema, SecurityScheme, Server,
+    ServerBinding, ServerVariable,
 };
 
 /// Holds a set of reusable objects for different aspects of the AsyncAPI specification.
@@ -215,6 +214,9 @@ pub struct Components {
     /// An object to hold reusable [Server Objects][crate::Server].
     #[serde(default, skip_serializing_if = "IndexMap::is_empty")]
     pub servers: IndexMap<String, ReferenceOr<Server>>,
+    /// An object to hold reusable [Server Objects][crate::ServerVariable].
+    #[serde(default, rename = "serverVariables", skip_serializing_if = "IndexMap::is_empty")]
+    pub server_variables: IndexMap<String, ReferenceOr<ServerVariable>>,
     /// An object to hold reusable
     /// [Server Bindings Objects][crate::ServerBinding].
     #[serde(default, skip_serializing_if = "IndexMap::is_empty")]
@@ -235,7 +237,7 @@ pub struct Components {
     #[serde(default, skip_serializing_if = "IndexMap::is_empty")]
     pub message_bindings: IndexMap<String, ReferenceOr<MessageBinding>>,
     /// This object can be extended with
-    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.3.0#specificationExtensions).
+    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.4.0#specificationExtensions).
     #[serde(flatten)]
     pub extensions: IndexMap<String, serde_json::Value>,
 }

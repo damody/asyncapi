@@ -59,10 +59,22 @@ use crate::{ReferenceOr, ServerBinding};
 /// ```yaml
 /// servers:
 ///   development:
-///     url: development.gigantic-server.com
+///     url: "{stage}.gigantic-server.com:{port}"
 ///     description: Development server
 ///     protocol: amqp
 ///     protocolVersion: 0.9.1
+///     variables:
+///     stage:
+///     $ref: "#/components/serverVariables/stage"
+///     port:
+///     $ref: "#/components/serverVariables/port"
+///     serverVariables:
+///     stage:
+///     default: demo
+///     description: This value is assigned by the service provider, in this example `gigantic-server.com`
+///     port:
+///     enum: [8883, 8884]
+///     default: 8883
 ///   staging:
 ///     url: staging.gigantic-server.com
 ///     description: Staging server
@@ -164,7 +176,7 @@ pub struct Server {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bindings: Option<ReferenceOr<ServerBinding>>,
     /// This object MAY be extended with
-    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.3.0#specificationExtensions).
+    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.4.0#specificationExtensions).
     #[serde(flatten)]
     pub extensions: IndexMap<String, serde_json::Value>,
 }
@@ -191,7 +203,7 @@ pub struct ServerVariable {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub examples: Option<Vec<String>>,
     /// This object MAY be extended with
-    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.3.0#specificationExtensions).
+    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.4.0#specificationExtensions).
     #[serde(flatten)]
     pub extensions: IndexMap<String, serde_json::Value>,
 }

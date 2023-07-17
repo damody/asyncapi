@@ -1,9 +1,7 @@
 use indexmap::IndexMap;
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    CorrelationId, Example, ExternalDocumentation, MessageBinding, ReferenceOr, Schema, Tag,
-};
+use crate::{CorrelationId, Example, ExternalDocumentation, MessageBinding, ReferenceOr, Schema, Tag};
 
 /// Describes a message received on a given channel and operation.
 ///
@@ -12,7 +10,7 @@ use crate::{
 ///
 /// NAME | ALLOWED VALUES | NOTES
 /// -----|----------------|--------
-/// [AsyncAPI 2.3.0 Schema Object](https://www.asyncapi.com/docs/specifications/v2.3.0#schemaObject) | `application/vnd.aai.asyncapi;version=2.3.0`, `application/vnd.aai.asyncapi+json;version=2.3.0`, `application/vnd.aai.asyncapi+yaml;version=2.3.0` | This is the default when a `schemaFormat` is not provided.
+/// [AsyncAPI 2.4.0 Schema Object](https://www.asyncapi.com/docs/specifications/v2.4.0#schemaObject) | `application/vnd.aai.asyncapi;version=2.4.0`, `application/vnd.aai.asyncapi+json;version=2.4.0`, `application/vnd.aai.asyncapi+yaml;version=2.4.0` | This is the default when a `schemaFormat` is not provided.
 /// [JSON Schema Draft 07](https://json-schema.org/specification-links.html#draft-7) | `application/schema+json;version=draft-07`, `application/schema+yaml;version=draft-07` |
 ///
 /// The following table contains a set of values that every implementation is RECOMMENDED to support.
@@ -27,6 +25,7 @@ use crate::{
 ///
 /// ```json
 /// {
+///     "messageId": "userSignup",
 ///     "name": "UserSignup",
 ///     "title": "User signup",
 ///     "summary": "Action to sign a user up.",
@@ -90,6 +89,7 @@ use crate::{
 /// ```
 ///
 /// ```yaml
+/// messageId: userSignup
 /// name: UserSignup
 /// title: User signup
 /// summary: Action to sign a user up.
@@ -169,6 +169,13 @@ use crate::{
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct Message {
+    /// Unique string used to identify the message.
+    /// The id MUST be unique among all messages described in the API.
+    /// The messageId value is **case-sensitive**.
+    /// Tools and libraries MAY use the messageId to uniquely identify a message,
+    /// therefore, it is RECOMMENDED to follow common programming naming conventions.
+    #[serde(rename = "messageId", skip_serializing_if = "Option::is_none")]
+    pub message_id: Option<String>,
     /// Schema definition of the application headers.
     /// Schema MUST be of type "object". It **MUST NOT** define the protocol headers.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -221,7 +228,7 @@ pub struct Message {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub examples: Vec<Example>, // TODO try to parse better
     /// This object can be extended with
-    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.3.0#specificationExtensions).
+    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.4.0#specificationExtensions).
     #[serde(flatten)]
     pub extensions: IndexMap<String, serde_json::Value>,
 }
