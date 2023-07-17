@@ -28,7 +28,7 @@ pub struct Tag {
     #[serde(rename = "externalDocs", skip_serializing_if = "Option::is_none")]
     pub external_docs: Option<ExternalDocumentation>,
     /// This object MAY be extended with
-    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.5.0#specificationExtensions).
+    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.6.0#specificationExtensions).
     #[serde(flatten)]
     pub extensions: IndexMap<String, serde_json::Value>,
 }

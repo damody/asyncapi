@@ -87,7 +87,7 @@ pub struct Channel {
     /// If there are conflicts between the referenced definition and this Channel Item's
     /// definition, the behavior is *undefined*.
     #[deprecated(note = "The $ref field in Channel Item Object is now deprecated
-        from AsyncAPI 2.5.0. The current plan is that the $ref field will be 
+        from AsyncAPI 2.6.0. The current plan is that the $ref field will be 
         removed from Channel Item Object in AsyncAPI 3.0, and replaced with 
         Reference Object.")]
     #[serde(rename = "$ref")]
@@ -157,7 +157,7 @@ pub struct Channel {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bindings: Option<ReferenceOr<ChannelBinding>>,
     /// This object MAY be extended with
-    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.5.0#specificationExtensions).
+    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.6.0#specificationExtensions).
     #[serde(flatten)]
     pub extensions: IndexMap<String, serde_json::Value>,
 }
@@ -298,7 +298,7 @@ pub struct Operation {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<OperationMessageType>,
     /// This object MAY be extended with
-    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.5.0#specificationExtensions).
+    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.6.0#specificationExtensions).
     #[serde(flatten)]
     pub extensions: IndexMap<String, serde_json::Value>,
 }

@@ -56,8 +56,15 @@ pub struct ServerBinding {
     /// Protocol-specific information for an IBM MQ server.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ibmmq: Option<IBMMQServerBinding>,
+    /// Protocol-specific information for an Googlepubsub server.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub googlepubsub: Option<GoogleServerBinding>,
+    /// Protocol-specific information for an Pulsar server.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pulsar: Option<PulsarServerBinding>,
+
     /// This object MAY be extended with
-    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.5.0#specificationExtensions).
+    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.6.0#specificationExtensions).
     #[serde(flatten)]
     pub extensions: IndexMap<String, serde_json::Value>,
 }
@@ -283,6 +290,31 @@ pub struct IBMMQServerBinding {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub heart_beat_interval: Option<i32>,
     /// The version of this binding.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub binding_version: Option<String>,
+}
+
+/// This object MUST NOT contain any properties. Its name is reserved for future use.
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
+pub struct GoogleServerBinding {}
+
+/// ```yaml
+/// servers:
+///   production:
+///     bindings:
+///       pulsar:
+///         tenant: contoso
+///         bindingVersion: '0.1.0'
+/// ```
+///
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct PulsarServerBinding {
+    /// The pulsar tenant. If omitted, "public" MUST be assumed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tenant: Option<String>,
+    // The version of this binding. If omitted, "latest" MUST be assumed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub binding_version: Option<String>,
 }

@@ -58,7 +58,7 @@ pub struct Info {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub license: Option<License>,
     /// This object MAY be extended with
-    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.5.0#specificationExtensions).
+    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.6.0#specificationExtensions).
     #[serde(flatten)]
     pub extensions: IndexMap<String, serde_json::Value>,
 }
@@ -94,7 +94,7 @@ pub struct Contact {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub email: Option<String>,
     /// This object MAY be extended with
-    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.5.0#specificationExtensions).
+    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.6.0#specificationExtensions).
     #[serde(flatten)]
     pub extensions: IndexMap<String, serde_json::Value>,
 }
@@ -123,7 +123,7 @@ pub struct License {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
     /// This object MAY be extended with
-    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.5.0#specificationExtensions).
+    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.6.0#specificationExtensions).
     #[serde(flatten)]
     pub extensions: IndexMap<String, serde_json::Value>,
 }

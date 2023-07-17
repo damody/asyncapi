@@ -30,7 +30,7 @@ pub struct SchemaData {
     /// this schema. The property name used MUST be defined at this schema and
     /// it MUST be in the `required` property list. When used, the value MUST be
     ///  the name of this schema or any schema that inherits it. See
-    /// [Composition and Inheritance](https://www.asyncapi.com/docs/specifications/v2.5.0#schemaComposition)
+    /// [Composition and Inheritance](https://www.asyncapi.com/docs/specifications/v2.6.0#schemaComposition)
     /// for more details.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discriminator: Option<String>,

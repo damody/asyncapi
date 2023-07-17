@@ -60,8 +60,11 @@ pub struct ChannelBinding {
     /// Protocol-specific information for a Google Cloud
     #[serde(skip_serializing_if = "Option::is_none")]
     pub googlepubsub: Option<GooglepubsubChannelBinding>,
+    /// Protocol-specific information for a Google Cloud
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pulsar: Option<PulsarChannelBinding>,
     /// This object MAY be extended with
-    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.5.0#specificationExtensions).
+    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.6.0#specificationExtensions).
     #[serde(flatten)]
     pub extensions: IndexMap<String, serde_json::Value>,
 }
@@ -496,6 +499,7 @@ pub struct GoogleSchemaSettings {
 
 /// # Example
 /// # ...
+/// ```yaml
 /// components:
 ///   messages:
 ///     messageAvro:
@@ -523,28 +527,60 @@ pub struct GoogleSchemaSettings {
 ///       name: MessageProto
 ///       payload: true
 /// # ...
+/// ```
 
+/// ```yaml
+/// channels:
+///   user-signedup:
+///   bindings:
+///     pulsar:
+///       namespace: 'staging'
+///       persistence: 'persistent'
+///       compaction: 1000
+///       geo-replication:
+///         - 'us-east1'
+///         - 'us-west1'
+///       retention:
+///         time: 7
+///         size: 1000
+///       ttl: 360
+///       deduplication: false
+///       bindingVersion: '0.1.0'
+/// ```
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 #[serde(rename_all = "camelCase")]
-pub struct GoogleMessageBinding {
-    /// The version of this binding. The current version is 0.1.0
+pub struct PulsarChannelBinding {
+    /// The namespace the channel is associated with.
+    pub namespace: String,
+    /// Persistence of the topic in Pulsar. It MUST be either persistent or non-persistent.
+    pub persistence: String,
+    /// Topic compaction threshold given in Megabytes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub compaction: Option<String>,
+    // A list of clusters the topic is replicated to.
+    #[serde(rename = "geo-replication", skip_serializing_if = "Vec::is_empty")]
+    pub geo_replication: Vec<String>,
+    /// Topic retention policy.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub retention: Option<PulsarRetentionDefinition>,
+    /// Message time-to-live in seconds.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ttl: Option<i32>,
+    /// Message deduplication. When true, it ensures that each message produced on Pulsar topics is persisted to disk only once.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub deduplication: Option<bool>,
+    /// The version of this binding. If omitted, "latest" MUST be assumed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub binding_version: Option<String>,
-    /// Attributes for this message (If this field is empty, the message must contain non-empty data. This can be used to filter messages on the subscription.)
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<serde_json::Value>,
-    /// If non-empty, identifies related messages for which publish order should be respected (For more information, see ordering messages.)
-    pub ordering_key: String,
-    /// Describes the schema used to validate the payload of this message
-    pub schema: GoogleSchemaDefinition,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 #[serde(rename_all = "camelCase")]
-pub struct GoogleSchemaDefinition {
-    /// The name of the schema
-    pub name: String,
-    /// The type of the schema
-    #[serde(rename = "type")]
-    pub type_: String,
+pub struct PulsarRetentionDefinition {
+    /// The retention time in minutes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub time: Option<i32>,
+    /// The retention size in megabytes.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub size: Option<i64>,
 }

@@ -57,8 +57,14 @@ pub struct MessageBinding {
     /// Protocol-specific information for an IBM MQ message.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ibmmq: Option<IBMMQMessageBinding>,
+    /// Protocol-specific information for an Google message.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub googlepubsub: Option<GoogleMessageBinding>,
+    /// Protocol-specific information for an Pulsar message.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pulsar: Option<PulsarMessageBinding>,
     /// This object MAY be extended with
-    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.5.0#specificationExtensions).
+    /// [Specification Extensions](https://www.asyncapi.com/docs/specifications/v2.6.0#specificationExtensions).
     #[serde(flatten)]
     pub extensions: IndexMap<String, serde_json::Value>,
 }
@@ -252,3 +258,33 @@ pub struct IBMMQMessageBinding {
     #[serde(rename = "type")]
     pub typ: Option<String>,
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct GoogleMessageBinding {
+    /// The version of this binding. The current version is 0.1.0
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub binding_version: Option<String>,
+    /// Attributes for this message (If this field is empty, the message must contain non-empty data. This can be used to filter messages on the subscription.)
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub attributes: Option<serde_json::Value>,
+    /// If non-empty, identifies related messages for which publish order should be respected (For more information, see ordering messages.)
+    pub ordering_key: String,
+    /// Describes the schema used to validate the payload of this message
+    pub schema: GoogleSchemaDefinition,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct GoogleSchemaDefinition {
+    /// The name of the schema
+    pub name: String,
+    /// The type of the schema
+    #[serde(rename = "type")]
+    pub type_: String,
+}
+
+/// This object MUST NOT contain any properties. Its name is reserved for future use.
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
+#[serde(rename_all = "camelCase")]
+pub struct PulsarMessageBinding {}
