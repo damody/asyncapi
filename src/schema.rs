@@ -1,21 +1,21 @@
 use crate::*;
 use indexmap::IndexMap;
 use serde::{Deserialize, Serialize};
-use std::clone::Clone;
+use std::{clone::Clone, str::FromStr};
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 #[serde(rename_all = "camelCase")]
 pub struct SchemaData {
-    #[serde(default, skip_serializing_if = "Clone::clone")]
-    pub nullable: bool,
-    #[serde(default, skip_serializing_if = "Clone::clone")]
-    pub read_only: bool,
-    #[serde(default, skip_serializing_if = "Clone::clone")]
-    pub write_only: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nullable: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub write_only: Option<bool>,
     /// Specifies that a schema is deprecated and SHOULD be transitioned out
     /// of usage. Default value is `false`.
-    #[serde(default, skip_serializing_if = "Clone::clone")]
-    pub deprecated: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deprecated: Option<bool>,
     /// Additional external documentation for this schema.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub external_docs: Option<ExternalDocumentation>,
@@ -186,6 +186,184 @@ pub struct ObjectType {
     pub min_properties: Option<usize>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub max_properties: Option<usize>,
+}
+
+impl ObjectType {
+    pub fn GetPropertie(typ: String, ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
+        let res = match typ.as_str() {
+            "u32" => ObjectType::CreatePropertie(ex_value.parse::<i32>().unwrap_or(0), description),
+            "u64" => ObjectType::CreatePropertie(ex_value.parse::<i64>().unwrap_or(0), description),
+            "i32" => ObjectType::CreatePropertie(ex_value.parse::<i32>().unwrap_or(0), description),
+            "i64" => ObjectType::CreatePropertie(ex_value.parse::<i64>().unwrap_or(0), description),
+            "f32" => ObjectType::CreatePropertie(ex_value.parse::<f32>().unwrap_or(0.0), description),
+            "f64" => ObjectType::CreatePropertie(ex_value.parse::<f64>().unwrap_or(0.0), description),
+            "String" => ObjectType::CreatePropertie(ex_value, description),
+            _ => {
+                let mut schema = Schema {
+                    schema_kind: SchemaKind::Any(AnySchema {
+                        format: Some(typ),
+                        ..Default::default()
+                    }),
+                    schema_data: SchemaData {
+                        nullable: None,
+                        read_only: None,
+                        write_only: None,
+                        deprecated: None,
+                        external_docs: None,
+                        example: Some(serde_json::Value::from_str(ex_value.as_str()).unwrap()),
+                        title: None,
+                        description: Some(description.clone()),
+                        discriminator: None,
+                        default: None,
+                    },
+                };
+                ReferenceOr::Item(Box::new(schema))
+            }
+        };
+        return res;
+    }
+}
+
+pub trait VValue<T> {
+    fn CreatePropertie(v_int: T, description: String) -> ReferenceOr<Box<Schema>>;
+}
+impl VValue<i32> for ObjectType {
+    fn CreatePropertie(v_int: i32, description: String) -> ReferenceOr<Box<Schema>> {
+        let mut schema = Schema {
+            schema_kind: SchemaKind::Type(Type::Integer(IntegerType {
+                format: VariantOrUnknownOrEmpty::Item(IntegerFormat::Int32),
+                multiple_of: None,
+                exclusive_minimum: None,
+                exclusive_maximum: None,
+                minimum: None,
+                maximum: None,
+                enumeration: Vec::new(),
+            })),
+            schema_data: SchemaData {
+                nullable: None,
+                read_only: None,
+                write_only: None,
+                deprecated: None,
+                external_docs: None,
+                example: Some(serde_json::Value::from(v_int)),
+                title: None,
+                description: Some(description.clone()),
+                discriminator: None,
+                default: None,
+            },
+        };
+        ReferenceOr::Item(Box::new(schema))
+    }
+}
+impl VValue<i64> for ObjectType {
+    fn CreatePropertie(v_int: i64, description: String) -> ReferenceOr<Box<Schema>> {
+        let mut schema = Schema {
+            schema_kind: SchemaKind::Type(Type::Integer(IntegerType {
+                format: VariantOrUnknownOrEmpty::Item(IntegerFormat::Int64),
+                multiple_of: None,
+                exclusive_minimum: None,
+                exclusive_maximum: None,
+                minimum: None,
+                maximum: None,
+                enumeration: Vec::new(),
+            })),
+            schema_data: SchemaData {
+                nullable: None,
+                read_only: None,
+                write_only: None,
+                deprecated: None,
+                external_docs: None,
+                example: Some(serde_json::Value::from(v_int)),
+                title: None,
+                description: Some(description.clone()),
+                discriminator: None,
+                default: None,
+            },
+        };
+        ReferenceOr::Item(Box::new(schema))
+    }
+}
+
+impl VValue<f32> for ObjectType {
+    fn CreatePropertie(v_number: f32, description: String) -> ReferenceOr<Box<Schema>> {
+        let mut schema = Schema {
+            schema_kind: SchemaKind::Type(Type::Number(NumberType {
+                format: VariantOrUnknownOrEmpty::Item(NumberFormat::Float),
+                multiple_of: None,
+                exclusive_minimum: None,
+                exclusive_maximum: None,
+                minimum: None,
+                maximum: None,
+                enumeration: Vec::new(),
+            })),
+            schema_data: SchemaData {
+                nullable: None,
+                read_only: None,
+                write_only: None,
+                deprecated: None,
+                external_docs: None,
+                example: Some(serde_json::Value::from(v_number)),
+                title: None,
+                description: Some(description.clone()),
+                discriminator: None,
+                default: None,
+            },
+        };
+        ReferenceOr::Item(Box::new(schema))
+    }
+}
+
+impl VValue<f64> for ObjectType {
+    fn CreatePropertie(v_number: f64, description: String) -> ReferenceOr<Box<Schema>> {
+        let mut schema = Schema {
+            schema_kind: SchemaKind::Type(Type::Number(NumberType {
+                format: VariantOrUnknownOrEmpty::Item(NumberFormat::Double),
+                multiple_of: None,
+                exclusive_minimum: None,
+                exclusive_maximum: None,
+                minimum: None,
+                maximum: None,
+                enumeration: Vec::new(),
+            })),
+            schema_data: SchemaData {
+                nullable: None,
+                read_only: None,
+                write_only: None,
+                deprecated: None,
+                external_docs: None,
+                example: Some(serde_json::Value::from(v_number)),
+                title: None,
+                description: Some(description.clone()),
+                discriminator: None,
+                default: None,
+            },
+        };
+        ReferenceOr::Item(Box::new(schema))
+    }
+}
+
+impl VValue<String> for ObjectType {
+    fn CreatePropertie(v_str: String, description: String) -> ReferenceOr<Box<Schema>> {
+        let mut schema = Schema {
+            schema_kind: SchemaKind::Type(Type::String(StringType {
+                format: VariantOrUnknownOrEmpty::Item(StringFormat::Byte),
+                ..Default::default()
+            })),
+            schema_data: SchemaData {
+                nullable: None,
+                read_only: None,
+                write_only: None,
+                deprecated: None,
+                external_docs: None,
+                example: Some(serde_json::Value::from(v_str)),
+                title: None,
+                description: Some(description.clone()),
+                discriminator: None,
+                default: None,
+            },
+        };
+        ReferenceOr::Item(Box::new(schema))
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]

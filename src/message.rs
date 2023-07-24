@@ -223,6 +223,7 @@ pub struct Message {
     pub external_docs: Option<ExternalDocumentation>,
     /// A map where the keys describe the name of
     /// the protocol and the values describe protocol-specific definitions for the message.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub bindings: Option<ReferenceOr<MessageBinding>>,
     /// An array with examples of valid message objects.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
