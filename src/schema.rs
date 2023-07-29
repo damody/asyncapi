@@ -191,31 +191,6 @@ pub struct ObjectType {
     pub max_properties: Option<usize>,
 }
 
-pub trait GetObjData {
-    fn GetObjectTypeData() -> ObjectType;
-}
-
-impl GetObjData for String {
-    fn GetObjectTypeData() -> ObjectType {
-        ObjectType {
-            properties: IndexMap::from([(
-                "d".to_owned(),
-                ReferenceOr::Item(Box::new(Schema {
-                    schema_data: SchemaData { ..Default::default() },
-                    schema_kind: SchemaKind::Type(Type::String(StringType {
-                        format: VariantOrUnknownOrEmpty::Item(StringFormat::Byte),
-                        ..Default::default()
-                    })),
-                })),
-            )]),
-            required: Vec::new(),
-            additional_properties: None,
-            min_properties: None,
-            max_properties: None,
-        }
-    }
-}
-
 pub trait VValue {
     fn CreatePropertie(description: String) -> ReferenceOr<Box<Schema>>;
 }
