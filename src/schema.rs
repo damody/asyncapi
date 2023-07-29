@@ -1,7 +1,10 @@
 use crate::*;
 use indexmap::IndexMap;
 use serde::{Deserialize, Serialize};
+use std::any::type_name;
+use std::any::TypeId;
 use std::{clone::Clone, str::FromStr};
+use vek::*;
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 #[serde(rename_all = "camelCase")]
@@ -188,178 +191,168 @@ pub struct ObjectType {
     pub max_properties: Option<usize>,
 }
 
-impl ObjectType {
-    pub fn GetPropertie(typ: String, ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
-        let res = match typ.as_str() {
-            "u32" => ObjectType::CreatePropertie(ex_value.parse::<i32>().unwrap_or(0), description),
-            "u64" => ObjectType::CreatePropertie(ex_value.parse::<i64>().unwrap_or(0), description),
-            "i32" => ObjectType::CreatePropertie(ex_value.parse::<i32>().unwrap_or(0), description),
-            "i64" => ObjectType::CreatePropertie(ex_value.parse::<i64>().unwrap_or(0), description),
-            "f32" => ObjectType::CreatePropertie(ex_value.parse::<f32>().unwrap_or(0.0), description),
-            "f64" => ObjectType::CreatePropertie(ex_value.parse::<f64>().unwrap_or(0.0), description),
-            "String" => ObjectType::CreatePropertie(ex_value, description),
-            _ => {
-                let mut schema = Schema {
-                    schema_kind: SchemaKind::Any(AnySchema {
-                        format: Some(typ),
+pub trait GetObjData {
+    fn GetObjectTypeData() -> ObjectType;
+}
+
+impl GetObjData for String {
+    fn GetObjectTypeData() -> ObjectType {
+        ObjectType {
+            properties: IndexMap::from([(
+                "d".to_owned(),
+                ReferenceOr::Item(Box::new(Schema {
+                    schema_data: SchemaData { ..Default::default() },
+                    schema_kind: SchemaKind::Type(Type::String(StringType {
+                        format: VariantOrUnknownOrEmpty::Item(StringFormat::Byte),
                         ..Default::default()
-                    }),
-                    schema_data: SchemaData {
-                        nullable: None,
-                        read_only: None,
-                        write_only: None,
-                        deprecated: None,
-                        external_docs: None,
-                        example: Some(serde_json::Value::from_str(ex_value.as_str()).unwrap()),
-                        title: None,
-                        description: Some(description.clone()),
-                        discriminator: None,
-                        default: None,
-                    },
-                };
-                ReferenceOr::Item(Box::new(schema))
-            }
-        };
-        return res;
+                    })),
+                })),
+            )]),
+            required: Vec::new(),
+            additional_properties: None,
+            min_properties: None,
+            max_properties: None,
+        }
     }
 }
 
-pub trait VValue<T> {
-    fn CreatePropertie(v_int: T, description: String) -> ReferenceOr<Box<Schema>>;
+pub trait VValue {
+    fn CreatePropertie(description: String) -> ReferenceOr<Box<Schema>>;
 }
-impl VValue<i32> for ObjectType {
-    fn CreatePropertie(v_int: i32, description: String) -> ReferenceOr<Box<Schema>> {
+
+impl VValue for Vec2<f32> {
+    fn CreatePropertie(description: String) -> ReferenceOr<Box<Schema>> {
+        let mut schema = Schema {
+            schema_data: SchemaData {
+                description: Some(description.clone()),
+                ..Default::default()
+            },
+            schema_kind: SchemaKind::Type(schema::Type::Object(
+                ObjectType {
+                    properties: IndexMap::from([
+                        (
+                            "x".to_owned(),
+                            ReferenceOr::Item(Box::new(Schema {
+                                schema_data: SchemaData { ..Default::default() },
+                                schema_kind: SchemaKind::Type(Type::Number(NumberType {
+                                    format: VariantOrUnknownOrEmpty::Item(NumberFormat::Float),
+                                    enumeration: Vec::new(),
+                                    ..Default::default()
+                                })),
+                            }))
+                        ),
+                        (
+                            "y".to_owned(),
+                            ReferenceOr::Item(Box::new(Schema {
+                                schema_data: SchemaData { ..Default::default() },
+                                schema_kind: SchemaKind::Type(Type::Number(NumberType {
+                                    format: VariantOrUnknownOrEmpty::Item(NumberFormat::Float),
+                                    enumeration: Vec::new(),
+                                    ..Default::default()
+                                })),
+                            }))
+                        ),
+                    ]),
+                    ..Default::default()
+                },
+            )),
+        };
+        ReferenceOr::Item(Box::new(schema))
+    }
+}
+impl VValue for i32 {
+    fn CreatePropertie(description: String) -> ReferenceOr<Box<Schema>> {
         let mut schema = Schema {
             schema_kind: SchemaKind::Type(Type::Integer(IntegerType {
                 format: VariantOrUnknownOrEmpty::Item(IntegerFormat::Int32),
-                multiple_of: None,
-                exclusive_minimum: None,
-                exclusive_maximum: None,
-                minimum: None,
-                maximum: None,
                 enumeration: Vec::new(),
+                ..Default::default()
             })),
             schema_data: SchemaData {
-                nullable: None,
-                read_only: None,
-                write_only: None,
-                deprecated: None,
-                external_docs: None,
-                example: Some(serde_json::Value::from(v_int)),
-                title: None,
                 description: Some(description.clone()),
-                discriminator: None,
-                default: None,
+                ..Default::default()
             },
         };
         ReferenceOr::Item(Box::new(schema))
     }
 }
-impl VValue<i64> for ObjectType {
-    fn CreatePropertie(v_int: i64, description: String) -> ReferenceOr<Box<Schema>> {
+impl VValue for u32 {
+    fn CreatePropertie(description: String) -> ReferenceOr<Box<Schema>> {
+        let mut schema = Schema {
+            schema_kind: SchemaKind::Type(Type::Integer(IntegerType {
+                format: VariantOrUnknownOrEmpty::Item(IntegerFormat::Int32),
+                enumeration: Vec::new(),
+                ..Default::default()
+            })),
+            schema_data: SchemaData {
+                description: Some(description.clone()),
+                ..Default::default()
+            },
+        };
+        ReferenceOr::Item(Box::new(schema))
+    }
+}
+impl VValue for i64 {
+    fn CreatePropertie(description: String) -> ReferenceOr<Box<Schema>> {
         let mut schema = Schema {
             schema_kind: SchemaKind::Type(Type::Integer(IntegerType {
                 format: VariantOrUnknownOrEmpty::Item(IntegerFormat::Int64),
-                multiple_of: None,
-                exclusive_minimum: None,
-                exclusive_maximum: None,
-                minimum: None,
-                maximum: None,
                 enumeration: Vec::new(),
+                ..Default::default()
             })),
             schema_data: SchemaData {
-                nullable: None,
-                read_only: None,
-                write_only: None,
-                deprecated: None,
-                external_docs: None,
-                example: Some(serde_json::Value::from(v_int)),
-                title: None,
                 description: Some(description.clone()),
-                discriminator: None,
-                default: None,
+                ..Default::default()
             },
         };
         ReferenceOr::Item(Box::new(schema))
     }
 }
 
-impl VValue<f32> for ObjectType {
-    fn CreatePropertie(v_number: f32, description: String) -> ReferenceOr<Box<Schema>> {
+impl VValue for f32 {
+    fn CreatePropertie(description: String) -> ReferenceOr<Box<Schema>> {
         let mut schema = Schema {
             schema_kind: SchemaKind::Type(Type::Number(NumberType {
                 format: VariantOrUnknownOrEmpty::Item(NumberFormat::Float),
-                multiple_of: None,
-                exclusive_minimum: None,
-                exclusive_maximum: None,
-                minimum: None,
-                maximum: None,
                 enumeration: Vec::new(),
+                ..Default::default()
             })),
             schema_data: SchemaData {
-                nullable: None,
-                read_only: None,
-                write_only: None,
-                deprecated: None,
-                external_docs: None,
-                example: Some(serde_json::Value::from(v_number)),
-                title: None,
                 description: Some(description.clone()),
-                discriminator: None,
-                default: None,
+                ..Default::default()
             },
         };
         ReferenceOr::Item(Box::new(schema))
     }
 }
 
-impl VValue<f64> for ObjectType {
-    fn CreatePropertie(v_number: f64, description: String) -> ReferenceOr<Box<Schema>> {
+impl VValue for f64 {
+    fn CreatePropertie(description: String) -> ReferenceOr<Box<Schema>> {
         let mut schema = Schema {
             schema_kind: SchemaKind::Type(Type::Number(NumberType {
                 format: VariantOrUnknownOrEmpty::Item(NumberFormat::Double),
-                multiple_of: None,
-                exclusive_minimum: None,
-                exclusive_maximum: None,
-                minimum: None,
-                maximum: None,
                 enumeration: Vec::new(),
+                ..Default::default()
             })),
             schema_data: SchemaData {
-                nullable: None,
-                read_only: None,
-                write_only: None,
-                deprecated: None,
-                external_docs: None,
-                example: Some(serde_json::Value::from(v_number)),
-                title: None,
                 description: Some(description.clone()),
-                discriminator: None,
-                default: None,
+                ..Default::default()
             },
         };
         ReferenceOr::Item(Box::new(schema))
     }
 }
 
-impl VValue<String> for ObjectType {
-    fn CreatePropertie(v_str: String, description: String) -> ReferenceOr<Box<Schema>> {
+impl VValue for String {
+    fn CreatePropertie(description: String) -> ReferenceOr<Box<Schema>> {
         let mut schema = Schema {
             schema_kind: SchemaKind::Type(Type::String(StringType {
                 format: VariantOrUnknownOrEmpty::Item(StringFormat::Byte),
                 ..Default::default()
             })),
             schema_data: SchemaData {
-                nullable: None,
-                read_only: None,
-                write_only: None,
-                deprecated: None,
-                external_docs: None,
-                example: Some(serde_json::Value::from(v_str)),
-                title: None,
                 description: Some(description.clone()),
-                discriminator: None,
-                default: None,
+                ..Default::default()
             },
         };
         ReferenceOr::Item(Box::new(schema))
