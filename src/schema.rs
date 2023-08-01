@@ -195,6 +195,134 @@ pub trait XValue {
     fn CreatePropertie(typ: String, ex_value: String, description: String) -> ReferenceOr<Box<Schema>>;
 }
 
+impl XValue for Vec<i32> {
+    fn CreatePropertie(typ: String, ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
+        let mut schema = Schema {
+            schema_data: SchemaData {
+                description: Some(description.clone()),
+                ..Default::default()
+            },
+            schema_kind: SchemaKind::Type(schema::Type::Array(
+                ArrayType {
+                    items: Some(ReferenceOr::Item(Box::new(Schema {
+                        schema_data: SchemaData { ..Default::default() },
+                        schema_kind: SchemaKind::Type(Type::Integer(IntegerType {
+                            format: VariantOrUnknownOrEmpty::Item(IntegerFormat::Int32),
+                            enumeration: Vec::new(),
+                            ..Default::default()
+                        })),
+                    }))),
+                    ..Default::default()
+                },
+            )),
+        };
+        ReferenceOr::Item(Box::new(schema))
+    }
+}
+impl XValue for Vec<u32> {
+    fn CreatePropertie(typ: String, ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
+        let mut schema = Schema {
+            schema_data: SchemaData {
+                description: Some(description.clone()),
+                ..Default::default()
+            },
+            schema_kind: SchemaKind::Type(schema::Type::Array(
+                ArrayType {
+                    items: Some(ReferenceOr::Item(Box::new(Schema {
+                        schema_data: SchemaData { ..Default::default() },
+                        schema_kind: SchemaKind::Type(Type::Integer(IntegerType {
+                            format: VariantOrUnknownOrEmpty::Item(IntegerFormat::UInt32),
+                            enumeration: Vec::new(),
+                            ..Default::default()
+                        })),
+                    }))),
+                    ..Default::default()
+                },
+            )),
+        };
+        ReferenceOr::Item(Box::new(schema))
+    }
+}
+impl XValue for Vec2<i32> {
+    fn CreatePropertie(typ: String, ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
+        let mut schema = Schema {
+            schema_data: SchemaData {
+                description: Some(description.clone()),
+                ..Default::default()
+            },
+            schema_kind: SchemaKind::Type(schema::Type::Object(
+                ObjectType {
+                    properties: IndexMap::from([
+                        (
+                            "x".to_owned(),
+                            ReferenceOr::Item(Box::new(Schema {
+                                schema_data: SchemaData { ..Default::default() },
+                                schema_kind: SchemaKind::Type(Type::Integer(IntegerType {
+                                    format: VariantOrUnknownOrEmpty::Item(IntegerFormat::Int32),
+                                    enumeration: Vec::new(),
+                                    ..Default::default()
+                                })),
+                            }))
+                        ),
+                        (
+                            "y".to_owned(),
+                            ReferenceOr::Item(Box::new(Schema {
+                                schema_data: SchemaData { ..Default::default() },
+                                schema_kind: SchemaKind::Type(Type::Integer(IntegerType {
+                                    format: VariantOrUnknownOrEmpty::Item(IntegerFormat::Int32),
+                                    enumeration: Vec::new(),
+                                    ..Default::default()
+                                })),
+                            }))
+                        ),
+                    ]),
+                    ..Default::default()
+                },
+            )),
+        };
+        ReferenceOr::Item(Box::new(schema))
+    }
+}
+impl XValue for Vec2<u32> {
+    fn CreatePropertie(typ: String, ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
+        let mut schema = Schema {
+            schema_data: SchemaData {
+                description: Some(description.clone()),
+                ..Default::default()
+            },
+            schema_kind: SchemaKind::Type(schema::Type::Object(
+                ObjectType {
+                    properties: IndexMap::from([
+                        (
+                            "x".to_owned(),
+                            ReferenceOr::Item(Box::new(Schema {
+                                schema_data: SchemaData { ..Default::default() },
+                                schema_kind: SchemaKind::Type(Type::Integer(IntegerType {
+                                    format: VariantOrUnknownOrEmpty::Item(IntegerFormat::UInt32),
+                                    enumeration: Vec::new(),
+                                    ..Default::default()
+                                })),
+                            }))
+                        ),
+                        (
+                            "y".to_owned(),
+                            ReferenceOr::Item(Box::new(Schema {
+                                schema_data: SchemaData { ..Default::default() },
+                                schema_kind: SchemaKind::Type(Type::Integer(IntegerType {
+                                    format: VariantOrUnknownOrEmpty::Item(IntegerFormat::UInt32),
+                                    enumeration: Vec::new(),
+                                    ..Default::default()
+                                })),
+                            }))
+                        ),
+                    ]),
+                    ..Default::default()
+                },
+            )),
+        };
+        ReferenceOr::Item(Box::new(schema))
+    }
+}
 impl XValue for Vec2<f32> {
     fn CreatePropertie(typ: String, ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
         let mut schema = Schema {
@@ -258,7 +386,7 @@ impl XValue for u32 {
     fn CreatePropertie(typ: String, ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
         let mut schema = Schema {
             schema_kind: SchemaKind::Type(Type::Integer(IntegerType {
-                format: VariantOrUnknownOrEmpty::Item(IntegerFormat::Int32),
+                format: VariantOrUnknownOrEmpty::Item(IntegerFormat::UInt32),
                 enumeration: Vec::new(),
                 ..Default::default()
             })),
@@ -377,7 +505,7 @@ impl ObjectType {
     }
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct ArrayType {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -400,6 +528,8 @@ pub enum NumberFormat {
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "lowercase")]
 pub enum IntegerFormat {
+    UInt32,
+    UInt64,
     Int32,
     Int64,
 }
