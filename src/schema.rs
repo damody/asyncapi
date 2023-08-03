@@ -195,6 +195,29 @@ pub trait XValue {
     fn CreatePropertie(typ: String, ex_value: String, description: String) -> ReferenceOr<Box<Schema>>;
 }
 
+impl XValue for Vec<String> {
+    fn CreatePropertie(typ: String, ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
+        let mut schema = Schema {
+            schema_data: SchemaData {
+                description: Some(description.clone()),
+                ..Default::default()
+            },
+            schema_kind: SchemaKind::Type(schema::Type::Array(
+                ArrayType {
+                    items: Some(ReferenceOr::Item(Box::new(Schema {
+                        schema_data: SchemaData { ..Default::default() },
+                        schema_kind: SchemaKind::Type(Type::String(StringType {
+                            format: VariantOrUnknownOrEmpty::Item(StringFormat::Byte),
+                            ..Default::default()
+                        })),
+                    }))),
+                    ..Default::default()
+                },
+            )),
+        };
+        ReferenceOr::Item(Box::new(schema))
+    }
+}
 impl XValue for Vec<i32> {
     fn CreatePropertie(typ: String, ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
         let mut schema = Schema {
