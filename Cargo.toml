@@ -15,7 +15,7 @@ readme = "Readme.md"
 serde = {version = "1.0.130", features = ["derive"]}
 serde_json = "1.0"
 serde_yaml = "0.9"
-indexmap = { version = "1.9", features = ["serde-1"] }
+indexmap = { version = "2", features = ["serde"] }
 syn = { version = "2.0", features = ["full"] }
 vek = { version = "0.16", features = ["serde"] }
 
