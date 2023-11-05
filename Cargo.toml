@@ -19,7 +19,3 @@ indexmap = { version = "2", features = ["serde"] }
 syn = { version = "2.0", features = ["full"] }
 vek = { version = "0.16", features = ["serde"] }
 
-[workspace]
-members = [
-    "generate-tests"
-]
