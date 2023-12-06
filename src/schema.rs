@@ -50,12 +50,22 @@ pub struct Schema {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct PayloadKind {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    
+    pub payload: Schema,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(untagged)]
 pub enum SchemaKind {
     Type(Type),
     OneOf {
         #[serde(rename = "oneOf")]
-        one_of: Vec<ReferenceOr<Schema>>,
+        one_of: Vec<ReferenceOr<PayloadKind>>,
     },
     AllOf {
         #[serde(rename = "allOf")]

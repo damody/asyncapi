@@ -186,6 +186,10 @@ pub struct Message {
     /// a YAML or JSON object NOT a string to be parsed as YAML or JSON.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub payload: Option<Payload>,
+
+    #[serde(flatten)]
+    pub same_channel_schema: Option<Schema>,
+
     /// Definition of the correlation ID used for message tracing or matching.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub correlation_id: Option<ReferenceOr<CorrelationId>>,

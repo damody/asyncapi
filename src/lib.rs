@@ -35,7 +35,7 @@ pub use operation_binding::OperationBinding;
 pub use operation_trait::OperationTrait;
 pub use parameter::Parameter;
 pub use reference::ReferenceOr;
-pub use schema::{Schema, SchemaData, SchemaKind};
+pub use schema::{Schema, SchemaData, SchemaKind, PayloadKind};
 pub use security_scheme::SecurityScheme;
 pub use server::{SecurityRequirement, Server, ServerVariable};
 pub use server_binding::ServerBinding;
