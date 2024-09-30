@@ -202,11 +202,11 @@ pub struct ObjectType {
 }
 
 pub trait XValue {
-    fn CreatePropertie(typ: String, ex_value: String, description: String) -> ReferenceOr<Box<Schema>>;
+    fn create_propertie(typ: String, ex_value: String, description: String) -> ReferenceOr<Box<Schema>>;
 }
 
 impl XValue for Vec<String> {
-    fn CreatePropertie(_typ: String, _ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
+    fn create_propertie(_typ: String, _ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
         let schema = Schema {
             schema_data: SchemaData {
                 description: Some(description.clone()),
@@ -229,7 +229,7 @@ impl XValue for Vec<String> {
     }
 }
 impl XValue for Vec<i32> {
-    fn CreatePropertie(_typ: String, _ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
+    fn create_propertie(_typ: String, _ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
         let schema = Schema {
             schema_data: SchemaData {
                 description: Some(description.clone()),
@@ -253,7 +253,7 @@ impl XValue for Vec<i32> {
     }
 }
 impl XValue for Vec<u32> {
-    fn CreatePropertie(_typ: String, _ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
+    fn create_propertie(_typ: String, _ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
         let schema = Schema {
             schema_data: SchemaData {
                 description: Some(description.clone()),
@@ -277,7 +277,7 @@ impl XValue for Vec<u32> {
     }
 }
 impl XValue for Vec2<i32> {
-    fn CreatePropertie(_typ: String, _ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
+    fn create_propertie(_typ: String, _ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
         let schema = Schema {
             schema_data: SchemaData {
                 description: Some(description.clone()),
@@ -317,7 +317,7 @@ impl XValue for Vec2<i32> {
     }
 }
 impl XValue for Vec2<u32> {
-    fn CreatePropertie(_typ: String, _ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
+    fn create_propertie(_typ: String, _ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
         let schema = Schema {
             schema_data: SchemaData {
                 description: Some(description.clone()),
@@ -357,7 +357,7 @@ impl XValue for Vec2<u32> {
     }
 }
 impl XValue for Vec2<f32> {
-    fn CreatePropertie(_typ: String, _ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
+    fn create_propertie(_typ: String, _ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
         let schema = Schema {
             schema_data: SchemaData {
                 description: Some(description.clone()),
@@ -397,7 +397,7 @@ impl XValue for Vec2<f32> {
     }
 }
 impl XValue for i32 {
-    fn CreatePropertie(_typ: String, ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
+    fn create_propertie(_typ: String, ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
         let mut schema = Schema {
             schema_kind: SchemaKind::Type(Type::Integer(IntegerType {
                 format: VariantOrUnknownOrEmpty::Item(IntegerFormat::Int32),
@@ -416,7 +416,7 @@ impl XValue for i32 {
     }
 }
 impl XValue for u32 {
-    fn CreatePropertie(_typ: String, ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
+    fn create_propertie(_typ: String, ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
         let mut schema = Schema {
             schema_kind: SchemaKind::Type(Type::Integer(IntegerType {
                 format: VariantOrUnknownOrEmpty::Item(IntegerFormat::UInt32),
@@ -435,7 +435,7 @@ impl XValue for u32 {
     }
 }
 impl XValue for i64 {
-    fn CreatePropertie(_typ: String, ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
+    fn create_propertie(_typ: String, ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
         let mut schema = Schema {
             schema_kind: SchemaKind::Type(Type::Integer(IntegerType {
                 format: VariantOrUnknownOrEmpty::Item(IntegerFormat::Int64),
@@ -455,7 +455,7 @@ impl XValue for i64 {
 }
 
 impl XValue for f32 {
-    fn CreatePropertie(_typ: String, ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
+    fn create_propertie(_typ: String, ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
         let mut schema = Schema {
             schema_kind: SchemaKind::Type(Type::Number(NumberType {
                 format: VariantOrUnknownOrEmpty::Item(NumberFormat::Float),
@@ -475,7 +475,7 @@ impl XValue for f32 {
 }
 
 impl XValue for f64 {
-    fn CreatePropertie(_typ: String, ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
+    fn create_propertie(_typ: String, ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
         let mut schema = Schema {
             schema_kind: SchemaKind::Type(Type::Number(NumberType {
                 format: VariantOrUnknownOrEmpty::Item(NumberFormat::Double),
@@ -495,7 +495,7 @@ impl XValue for f64 {
 }
 
 impl XValue for String {
-    fn CreatePropertie(_typ: String, ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
+    fn create_propertie(_typ: String, ex_value: String, description: String) -> ReferenceOr<Box<Schema>> {
         let mut schema = Schema {
             schema_kind: SchemaKind::Type(Type::String(StringType {
                 format: VariantOrUnknownOrEmpty::Item(StringFormat::Byte),
@@ -515,7 +515,7 @@ impl XValue for String {
 
 
 impl ObjectType {
-    pub fn CreatePropertie2(v_str: String, description: String) -> ReferenceOr<Box<Schema>> {
+    pub fn create_propertie2(v_str: String, description: String) -> ReferenceOr<Box<Schema>> {
         let schema = Schema {
             schema_kind: SchemaKind::Type(Type::String(StringType {
                 format: VariantOrUnknownOrEmpty::Item(StringFormat::Byte),
